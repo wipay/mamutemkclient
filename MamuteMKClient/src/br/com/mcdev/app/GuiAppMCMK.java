@@ -17,10 +17,12 @@ package br.com.mcdev.app;
  */
 public class GuiAppMCMK extends javax.swing.JFrame {
 
+    MCMKLogin mmLogin;
     /** Creates new form GuiAppMCMK */
     public GuiAppMCMK() {
         initComponents();
     }
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -48,6 +50,11 @@ public class GuiAppMCMK extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         fileMenu.setText("File");
 
@@ -115,6 +122,14 @@ public class GuiAppMCMK extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        mmLogin = new MCMKLogin(this, true);
+        mmLogin.setLocationRelativeTo(this);
+        mmLogin.setLocation(300,300);
+        mmLogin.setVisible(true);
+
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
