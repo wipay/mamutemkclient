@@ -179,7 +179,7 @@ package br.com.mcdev.util;
                }
                if (s.contains("!done")) {
                    if (!s.contains("!trap")) {
-                       return "Login successful";
+                       return "successful";
                    }
                }
            }
