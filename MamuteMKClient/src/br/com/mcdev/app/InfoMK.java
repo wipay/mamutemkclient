@@ -8,8 +8,14 @@
  *
  * Created on Feb 2, 2011, 8:37:36 PM
  */
-
 package br.com.mcdev.app;
+
+import br.com.mcdev.util.ApiConn;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JFrame;
 
 /**
  *
@@ -17,9 +23,37 @@ package br.com.mcdev.app;
  */
 public class InfoMK extends javax.swing.JInternalFrame {
 
+    private JFrame mdi;
+    private ApiConn aConn;
+
     /** Creates new form InfoMK */
     public InfoMK() {
         initComponents();
+    }
+
+    public InfoMK(JFrame mdi, ApiConn aConn) {
+        this.mdi = mdi;
+        this.aConn = aConn;
+        initComponents();
+    }
+
+    private String getIdentityMK() {
+        String saida = null;
+        
+        aConn.sendCommand("/system/identity/getall");
+        Pattern fName = Pattern.compile("(?<==name=)\\S+");
+        Matcher m;
+
+        try {
+            m = fName.matcher(aConn.getData());
+            while (m.find()) {
+                saida = m.group();
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(InfoMK.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return saida;
+
     }
 
     /** This method is called from within the constructor to
@@ -31,22 +65,88 @@ public class InfoMK extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblIdentity = new javax.swing.JLabel();
+        txtIdentity = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+
+        setClosable(true);
+        setIconifiable(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
+
+        lblIdentity.setText("Identificação:");
+
+        txtIdentity.setEditable(false);
+        txtIdentity.setToolTipText("Identificação do Mikrotik");
+
+        jButton1.setText("ATUALIZA");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 638, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(109, 109, 109)
+                .addComponent(lblIdentity)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtIdentity, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(143, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(219, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(217, 217, 217))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 486, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblIdentity)
+                    .addComponent(txtIdentity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(84, 84, 84)
+                .addComponent(jButton1)
+                .addContainerGap(266, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        txtIdentity.setText(getIdentityMK());
+    }//GEN-LAST:event_formInternalFrameOpened
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        getIdentityMK();
+    }//GEN-LAST:event_formInternalFrameClosed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        txtIdentity.setText(getIdentityMK());
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel lblIdentity;
+    private javax.swing.JTextField txtIdentity;
     // End of variables declaration//GEN-END:variables
-
 }
