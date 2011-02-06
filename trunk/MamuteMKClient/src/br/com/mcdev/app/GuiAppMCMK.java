@@ -8,8 +8,13 @@
  *
  * Created on Feb 2, 2011, 4:48:55 PM
  */
-
 package br.com.mcdev.app;
+
+import br.com.mcdev.util.ApiConn;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,12 +22,14 @@ package br.com.mcdev.app;
  */
 public class GuiAppMCMK extends javax.swing.JFrame {
 
-    MCMKLogin mmLogin;
+    private ApiConn aConn = new ApiConn("10.2.1.53", 8728);
+    private InfoMK infoMKForm;
+    private MCMKLogin mmLogin;
+
     /** Creates new form GuiAppMCMK */
     public GuiAppMCMK() {
         initComponents();
     }
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -35,16 +42,11 @@ public class GuiAppMCMK extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
+        menu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -56,16 +58,21 @@ public class GuiAppMCMK extends javax.swing.JFrame {
             }
         });
 
-        fileMenu.setText("File");
+        menu.setText("Menu");
 
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
+        openMenuItem.setText("Informations");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
+        menu.add(openMenuItem);
 
         saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
+        menu.add(saveMenuItem);
 
         saveAsMenuItem.setText("Save As ...");
-        fileMenu.add(saveAsMenuItem);
+        menu.add(saveAsMenuItem);
 
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -73,25 +80,9 @@ public class GuiAppMCMK extends javax.swing.JFrame {
                 exitMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(exitMenuItem);
+        menu.add(exitMenuItem);
 
-        menuBar.add(fileMenu);
-
-        editMenu.setText("Edit");
-
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
-
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
-
-        menuBar.add(editMenu);
+        menuBar.add(menu);
 
         helpMenu.setText("Help");
 
@@ -109,11 +100,11 @@ public class GuiAppMCMK extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
+            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 865, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+            .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
         );
 
         pack();
@@ -124,40 +115,72 @@ public class GuiAppMCMK extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        mmLogin = new MCMKLogin(this, true);
-        mmLogin.setLocationRelativeTo(this);
-        mmLogin.setLocation(300,300);
-        mmLogin.setVisible(true);
+//        mmLogin = new MCMKLogin(this, true);
+//        mmLogin.setLocationRelativeTo(this);
+//        mmLogin.setLocation(300, 300);
+//        mmLogin.setVisible(true);
+
+        aConn.start();
+        try {
+            aConn.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MCMKLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (aConn.isConnected()) {
+
+            String confirm = aConn.login("admin", "tigrao123456".toCharArray());
+            if (confirm.equals("successful")) {
+            } else {
+                JOptionPane.showMessageDialog(null, "Password Falhou");
+
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Falha de Conexão, verifique os dados");
+
+        }
 
     }//GEN-LAST:event_formWindowOpened
 
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        if (this.infoMKForm == null) {
+            this.infoMKForm = new InfoMK(this,aConn);
+            this.desktopPane.add(this.infoMKForm);
+        }
+        this.openWindow(this.infoMKForm);
+    }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void openWindow(JComponent obj) {
+        if (!obj.isVisible()) {
+            if (!obj.isValid()) {
+                desktopPane.add(obj);
+            }
+
+            obj.setVisible(true);
+        }
+    }
+
     /**
-    * @param args the command line arguments
-    */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 new GuiAppMCMK().setVisible(true);
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem contentMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenu menu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
-
 }
