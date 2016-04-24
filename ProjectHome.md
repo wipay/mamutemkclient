@@ -1,0 +1,1 @@
+A proposta do projeto é criar uma aplicação simples para acesso a API do Mikrotik.
